@@ -147,12 +147,7 @@ export default function BlogHome({
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
-          {/* Left Column: Branding, Title, Subtitle, and Search */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center space-x-2 bg-brand-green-light border border-brand-green/20 rounded-full px-3 py-1 text-xs text-brand-green font-bold shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-              <span>Official Payfrica Chronicles</span>
-            </div>
             
             <h1 className="font-display font-black text-4xl sm:text-5xl md:text-6xl tracking-tight leading-none text-brand-green">
               Swap Assets to<br />
