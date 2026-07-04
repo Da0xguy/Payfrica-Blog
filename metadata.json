@@ -1,0 +1,6 @@
+{
+  "name": "Bridge Blog",
+  "description": "The official blog of Bridge by Payfrica, featuring fintech, stablecoin remittances, card solutions, and developer engineering insights in Africa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
