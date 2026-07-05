@@ -27,7 +27,6 @@ export default function PostDetail({
 }: PostDetailProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'extra-large'>('normal');
-  const [fontFamily, setFontFamily] = useState<'sans' | 'serif'>('sans');
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [claps, setClaps] = useState(post.claps);
   const [clappedTimes, setClappedTimes] = useState(0);
@@ -197,6 +196,26 @@ export default function PostDetail({
       setShowShareToast(true);
       setTimeout(() => setShowShareToast(false), 2500);
     });
+  };
+
+  // Share via Web Share API
+  const handleWebShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.title,
+          text: `Check out this article: "${post.title}" on Payfrica Blog`,
+          url: window.location.href,
+        });
+      } catch (error) {
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error sharing:', error);
+          handleCopyLink();
+        }
+      }
+    } else {
+      handleCopyLink();
+    }
   };
 
   // Handle posting a comment
@@ -537,28 +556,8 @@ export default function PostDetail({
           <span>Back to Blog feed</span>
         </button>
 
-        {/* Read controls: Font size, serif/sans toggle */}
+        {/* Read controls: Font size */}
         <div className="flex items-center space-x-4 bg-white border border-gray-100 rounded-xl p-1.5 shadow-sm">
-          {/* Typography Mode */}
-          <div className="flex items-center space-x-1.5 border-r border-gray-100 pr-3 mr-1">
-            <button
-              onClick={() => setFontFamily('sans')}
-              className={`px-2.5 py-1 text-xs rounded-md font-medium cursor-pointer transition-all ${
-                fontFamily === 'sans' ? 'bg-gray-100 text-brand-navy font-bold' : 'text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              Sans
-            </button>
-            <button
-              onClick={() => setFontFamily('serif')}
-              className={`px-2.5 py-1 text-xs rounded-md font-medium cursor-pointer transition-all font-serif ${
-                fontFamily === 'serif' ? 'bg-gray-100 text-brand-navy font-bold' : 'text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              Serif
-            </button>
-          </div>
-
           {/* Size Adjuster */}
           <div className="flex items-center space-x-2 text-gray-500">
             <button 
@@ -624,6 +623,18 @@ export default function PostDetail({
                 <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-brand-gold' : ''}`} />
               </button>
               <span className="text-[10px] text-gray-400 font-semibold tracking-wider uppercase">Save</span>
+            </div>
+
+            {/* Native Share button */}
+            <div className="flex flex-col items-center space-y-1">
+              <button
+                onClick={handleWebShare}
+                className="w-11 h-11 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green hover:bg-brand-green hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-sm hover:shadow"
+                title="Share Article"
+              >
+                <Share2 className="w-5 h-5 animate-pulse" />
+              </button>
+              <span className="text-[10px] text-gray-400 font-semibold tracking-wider uppercase">Share</span>
             </div>
 
             <div className="w-px h-10 bg-gray-100"></div>
@@ -726,10 +737,8 @@ export default function PostDetail({
           {/* Core Post Body Markdown content */}
           <div 
             ref={articleRef}
-            className={`markdown-body ${
+            className={`markdown-body font-sans ${
               fontSize === 'large' ? 'text-lg' : fontSize === 'extra-large' ? 'text-xl' : 'text-base'
-            } ${
-              fontFamily === 'serif' ? 'font-serif tracking-normal' : 'font-sans'
             }`}
           >
             {renderMarkdown(post.content)}
@@ -755,9 +764,17 @@ export default function PostDetail({
             </div>
 
             <div className="flex items-center space-x-2">
-              <button onClick={handleCopyLink} className="p-2.5 rounded-xl bg-gray-50 text-gray-400 hover:text-brand-navy border border-gray-100"><LinkIcon className="w-4 h-4" /></button>
-              <a href={`https://twitter.com/intent/tweet?text=${post.title}`} target="_blank" rel="noreferrer" className="p-2.5 rounded-xl bg-gray-50 text-gray-400 hover:text-brand-navy border border-gray-100"><Twitter className="w-4 h-4" /></a>
-              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="p-2.5 rounded-xl bg-gray-50 text-gray-400 hover:text-brand-navy border border-gray-100"><Linkedin className="w-4 h-4" /></a>
+              <button 
+                onClick={handleWebShare} 
+                className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-brand-green text-white hover:bg-brand-green-dark transition-colors text-xs font-bold shadow-sm cursor-pointer"
+                title="Share Article"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                <span>Share</span>
+              </button>
+              <button onClick={handleCopyLink} className="p-2.5 rounded-xl bg-gray-50 text-gray-400 hover:text-brand-navy border border-gray-100" title="Copy Link"><LinkIcon className="w-4 h-4" /></button>
+              <a href={`https://twitter.com/intent/tweet?text=${post.title}`} target="_blank" rel="noreferrer" className="p-2.5 rounded-xl bg-gray-50 text-gray-400 hover:text-brand-navy border border-gray-100" title="Share on X"><Twitter className="w-4 h-4" /></a>
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="p-2.5 rounded-xl bg-gray-50 text-gray-400 hover:text-brand-navy border border-gray-100" title="Share on LinkedIn"><Linkedin className="w-4 h-4" /></a>
             </div>
           </div>
 

@@ -143,7 +143,7 @@ export default function Header({ currentView, onNavigate, onOpenAdmin, isAdminMo
             </button>
             
             <a
-              href="https://bridge.payfrical.xyz"
+              href="https://bridge.payfrica.xyz"
               target="_blank"
               rel="noreferrer"
               className="flex items-center justify-center space-x-1.5 w-full bg-brand-green hover:bg-brand-green-dark text-white font-semibold text-sm py-3 px-4 rounded-xl shadow-md"
