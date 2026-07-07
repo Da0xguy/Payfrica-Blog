@@ -3,6 +3,7 @@ import { Post, Category } from '../types';
 import { categories, authors } from '../data';
 import PostCard from './PostCard';
 import { Search, Flame, Tag, Mail, CheckCircle2, User, HelpCircle, ChevronRight, X, Sparkles } from 'lucide-react';
+import { LogoSquareBlue, LogoNaira, LogoPayfrica, LogoSui, LogoUSDC, LogoUSDY, LogoAvalanche } from './TokenLogos';
 
 interface BlogHomeProps {
   posts: Post[];
@@ -149,9 +150,9 @@ export default function BlogHome({
           
           <div className="lg:col-span-7 space-y-6">
             
-            <h1 className="font-display font-black text-4xl sm:text-5xl md:text-6xl tracking-tight leading-none text-brand-green">
+            <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-none text-brand-green">
               Swap Assets to<br />
-              Cash in <span className="text-brand-gold-dark font-black">Seconds.</span>
+              Cash in <span className="text-brand-gold-dark font-bold">Seconds.</span>
             </h1>
             
             <p className="text-sm sm:text-base md:text-lg text-gray-500 max-w-xl leading-relaxed">
@@ -206,40 +207,69 @@ export default function BlogHome({
                 />
               </div>
 
-              {/* Floating Coin 1 - Naira ₦ */}
+              {/* Floating Logos around Avatar (Exact raw design without white wrapping badges) */}
+              
+              {/* 1. Naira (NGN) - Top Left (approx. 10 o'clock) */}
               <div 
-                className="absolute -top-1 left-4 bg-[#008751] text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg border-2 border-white animate-bounce" 
+                className="absolute top-0 left-6 w-14 h-14 sm:w-16 sm:h-16 drop-shadow-xl animate-bounce" 
                 style={{ animationDuration: '3s', animationDelay: '0.2s' }}
                 title="Nigerian Naira"
               >
-                ₦
+                <LogoNaira className="w-full h-full" />
               </div>
 
-              {/* Floating Coin 2 - Cedis ₵ */}
+              {/* 2. Sui - Mid Left (approx. 9 o'clock) */}
               <div 
-                className="absolute top-1/3 -left-4 bg-[#FCD116] text-brand-navy-dark w-10 h-10 rounded-full flex items-center justify-center font-extrabold text-base shadow-lg border-2 border-white animate-bounce" 
+                className="absolute top-[25%] -left-8 w-14 h-14 sm:w-16 sm:h-16 drop-shadow-xl animate-bounce" 
                 style={{ animationDuration: '4.5s', animationDelay: '0.8s' }}
-                title="Ghanaian Cedi"
+                title="Sui Blockchain"
               >
-                ₵
+                <LogoSui className="w-full h-full" />
               </div>
 
-              {/* Floating Coin 3 - Dollar $ */}
+              {/* 3. Payfrica - Bottom Left (approx. 8 o'clock) */}
               <div 
-                className="absolute -bottom-1 right-12 bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-lg border-2 border-white animate-bounce" 
+                className="absolute top-[55%] -left-6 w-14 h-14 sm:w-16 sm:h-16 drop-shadow-xl animate-bounce" 
+                style={{ animationDuration: '3.8s', animationDelay: '0.4s' }}
+                title="Payfrica"
+              >
+                <LogoPayfrica className="w-full h-full" />
+              </div>
+
+              {/* 4. USDY - Bottom Left-Center (approx. 7 o'clock) */}
+              <div 
+                className="absolute -bottom-6 left-[20%] w-14 h-14 sm:w-16 sm:h-16 drop-shadow-xl animate-bounce" 
+                style={{ animationDuration: '4.2s', animationDelay: '0.3s' }}
+                title="Ondo USDY"
+              >
+                <LogoUSDY className="w-full h-full" />
+              </div>
+
+              {/* 5. Blue Square (Celo/cUSD) - Bottom Right-Center (approx. 5 o'clock) */}
+              <div 
+                className="absolute -bottom-4 right-[15%] w-14 h-14 sm:w-16 sm:h-16 drop-shadow-xl animate-bounce" 
                 style={{ animationDuration: '3.5s', animationDelay: '0.5s' }}
-                title="US Dollar"
+                title="cUSD / Celo"
               >
-                $
+                <LogoSquareBlue className="w-full h-full" />
               </div>
 
-              {/* Floating Coin 4 - USDC */}
+              {/* 6. USDC - Mid Right (approx. 3 o'clock) */}
               <div 
-                className="absolute top-12 -right-3 bg-[#2775CA] text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-xs shadow-lg border-2 border-white animate-bounce" 
+                className="absolute top-[45%] -right-8 w-16 h-16 sm:w-20 sm:h-20 drop-shadow-xl animate-bounce" 
                 style={{ animationDuration: '4s', animationDelay: '0.1s' }}
-                title="USD Coin (Stablecoin)"
+                title="USD Coin (USDC)"
               >
-                USDC
+                <LogoUSDC className="w-full h-full" />
+              </div>
+
+              {/* 7. Avalanche (AVAX) - Top Right (approx. 1 o'clock) */}
+              <div 
+                className="absolute top-2 right-4 w-14 h-14 sm:w-16 sm:h-16 drop-shadow-xl animate-bounce" 
+                style={{ animationDuration: '3.4s', animationDelay: '0.6s' }}
+                title="Avalanche (AVAX)"
+              >
+                <LogoAvalanche className="w-full h-full" />
               </div>
             </div>
           </div>
@@ -251,7 +281,6 @@ export default function BlogHome({
       {hasActiveFilters && (
         <section className="bg-brand-green-light/30 border border-brand-green-dark/10 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="space-y-1">
-            <span className="text-xs font-semibold uppercase tracking-wider text-brand-green-dark">Filtered Feed</span>
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-lg font-bold text-brand-navy font-display">
                 Showing {filteredPosts.length} results
@@ -310,10 +339,7 @@ export default function BlogHome({
                 referrerPolicy="no-referrer"
                 className="object-cover w-full h-full transform group-hover:scale-[1.02] transition-transform duration-500"
               />
-              <div className="absolute top-4 left-4 bg-brand-navy text-brand-green text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-md shadow-md flex items-center space-x-1.5">
-                <Sparkles className="w-3 h-3 text-brand-gold animate-spin" />
-                <span>Featured Post</span>
-              </div>
+
             </div>
 
             {/* Featured Details */}

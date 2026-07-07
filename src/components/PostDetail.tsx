@@ -26,7 +26,6 @@ export default function PostDetail({
   onAuthorSelect
 }: PostDetailProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [fontSize, setFontSize] = useState<'normal' | 'large' | 'extra-large'>('normal');
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [claps, setClaps] = useState(post.claps);
   const [clappedTimes, setClappedTimes] = useState(0);
@@ -555,28 +554,6 @@ export default function PostDetail({
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Blog feed</span>
         </button>
-
-        {/* Read controls: Font size */}
-        <div className="flex items-center space-x-4 bg-white border border-gray-100 rounded-xl p-1.5 shadow-sm">
-          {/* Size Adjuster */}
-          <div className="flex items-center space-x-2 text-gray-500">
-            <button 
-              onClick={() => setFontSize('normal')}
-              className={`p-1.5 rounded-md cursor-pointer ${fontSize === 'normal' ? 'bg-gray-100 text-brand-navy font-bold' : 'hover:bg-gray-50'}`}
-              title="Normal Text"
-            >
-              <Minus className="w-3.5 h-3.5" />
-            </button>
-            <span className="text-[10px] font-bold tracking-wider font-mono text-gray-400 uppercase">Size</span>
-            <button 
-              onClick={() => setFontSize(fontSize === 'normal' ? 'large' : 'extra-large')}
-              className={`p-1.5 rounded-md cursor-pointer ${fontSize !== 'normal' ? 'bg-gray-100 text-brand-navy font-bold' : 'hover:bg-gray-50'}`}
-              title="Larger Text"
-            >
-              <Plus className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Main Body Layout: Sideboards and Article */}
@@ -737,9 +714,7 @@ export default function PostDetail({
           {/* Core Post Body Markdown content */}
           <div 
             ref={articleRef}
-            className={`markdown-body font-sans ${
-              fontSize === 'large' ? 'text-lg' : fontSize === 'extra-large' ? 'text-xl' : 'text-base'
-            }`}
+            className="markdown-body font-sans text-base"
           >
             {renderMarkdown(post.content)}
           </div>

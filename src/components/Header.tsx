@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Menu, X, ArrowUpRight, PenTool, Radio } from 'lucide-react';
+import { LogoPayfrica } from './TokenLogos';
 
 interface HeaderProps {
   currentView: string;
@@ -26,10 +27,7 @@ export default function Header({ currentView, onNavigate, onOpenAdmin, isAdminMo
           {/* Logo Section */}
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => { onNavigate('home'); setIsMobileMenuOpen(false); }}>
             <div className="flex items-center space-x-2 bg-brand-gold border-2 border-brand-green rounded-xl px-3.5 py-1.5 shadow-sm transition-transform hover:scale-102">
-              {/* Silhouette of Africa SVG */}
-              <svg className="w-5 h-5 text-brand-green fill-current" viewBox="0 0 100 100">
-                <path d="M 45,15 C 55,16 65,22 75,25 C 80,27 82,32 80,38 C 78,44 75,50 72,56 C 68,64 64,72 60,80 C 58,84 56,88 54,92 C 53,94 51,94 50,90 C 48,84 46,78 43,72 C 40,66 38,62 35,58 C 31,54 27,51 24,47 C 21,43 20,38 23,34 C 26,30 30,28 34,25 C 38,22 41,18 45,15 Z" />
-              </svg>
+              <LogoPayfrica className="w-6 h-6 shadow-sm rounded-full" />
               <span className="font-display font-black text-lg tracking-tight text-brand-green">
                 Payfrica
               </span>
@@ -70,7 +68,7 @@ export default function Header({ currentView, onNavigate, onOpenAdmin, isAdminMo
 
             <div className="flex items-center h-full bg-brand-green pl-16 pr-8 -mr-8 [clip-path:polygon(32px_0,100%_0,100%_100%,0_100%)]">
               <a
-                href="https://bridge.payfrical.xyz"
+                href="https://bridge.payfrica.xyz"
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center space-x-1.5 bg-white/15 hover:bg-white/25 text-white border border-white/25 font-semibold text-xs tracking-wide py-2.5 px-6 rounded-full transition-all cursor-pointer hover:scale-105"

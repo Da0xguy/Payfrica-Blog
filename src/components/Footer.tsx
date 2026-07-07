@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, ArrowRight, ShieldCheck, Twitter, Linkedin, Github, ExternalLink, Globe } from 'lucide-react';
+import { LogoPayfrica } from './TokenLogos';
 
 interface FooterProps {
   onNavigate: (view: string) => void;
@@ -136,9 +137,7 @@ export default function Footer({ onNavigate }: FooterProps) {
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-xs text-gray-500">
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-center md:text-left">
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 rounded bg-brand-navy flex items-center justify-center text-brand-green font-display font-black text-sm">
-                P
-              </div>
+              <LogoPayfrica className="w-6 h-6 shadow-sm rounded-full" />
               <span className="font-display font-semibold text-sm text-white tracking-tight">
                 Payfrica<span className="text-brand-green">.</span>
               </span>
