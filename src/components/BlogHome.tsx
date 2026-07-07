@@ -3,7 +3,7 @@ import { Post, Category } from '../types';
 import { categories, authors } from '../data';
 import PostCard from './PostCard';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Flame, Tag, Mail, CheckCircle2, User, HelpCircle, ChevronRight, X, Sparkles } from 'lucide-react';
+import { Search, Flame, Tag, Mail, CheckCircle2, User, HelpCircle, ChevronLeft, ChevronRight, X, Sparkles } from 'lucide-react';
 import { LogoSquareBlue, LogoNaira, LogoPayfrica, LogoSui, LogoUSDC, LogoUSDY, LogoAvalanche } from './TokenLogos';
 
 interface BlogHomeProps {
@@ -62,11 +62,31 @@ export default function BlogHome({
     setVisibleCount(6);
   }, [selectedCategory, selectedAuthor, selectedTag, searchQuery]);
 
-  // Find the featured post (usually flagged, or we take the first published one)
-  const featuredPost = useMemo(() => {
+  // Find multiple featured posts for the carousel
+  const featuredPosts = useMemo(() => {
     const published = posts.filter(p => p.isPublished);
-    return published.find(p => p.isFeatured) || published[0];
+    const featured = published.filter(p => p.isFeatured);
+    return featured.length > 0 ? featured : published.slice(0, 3);
   }, [posts]);
+
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [isCarouselHovered, setIsCarouselHovered] = useState(false);
+
+  useEffect(() => {
+    if (carouselIndex >= featuredPosts.length) {
+      setCarouselIndex(0);
+    }
+  }, [featuredPosts, carouselIndex]);
+
+  useEffect(() => {
+    if (isCarouselHovered || featuredPosts.length <= 1) return;
+
+    const timer = setInterval(() => {
+      setCarouselIndex((prev) => (prev + 1) % featuredPosts.length);
+    }, 6000); // Transition every 6 seconds
+
+    return () => clearInterval(timer);
+  }, [isCarouselHovered, featuredPosts.length]);
 
   // Extract all unique tags
   const allTags = useMemo(() => {
@@ -328,79 +348,122 @@ export default function BlogHome({
         </section>
       )}
 
-      {/* 3. Featured Post Block (Only when NO filters are active and posts exist) */}
-      {!hasActiveFilters && featuredPost && (
-        <section className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all">
-          <div className="grid grid-cols-1 lg:grid-cols-12">
-            
-            {/* Featured Image */}
-            <div 
-              onClick={() => onPostSelect(featuredPost.slug)}
-              className="lg:col-span-7 aspect-[16/10] lg:aspect-auto overflow-hidden bg-gray-100 cursor-pointer relative group"
-            >
-              <img
-                src={featuredPost.coverImage}
-                alt={featuredPost.title}
-                referrerPolicy="no-referrer"
-                className="object-cover w-full h-full transform group-hover:scale-[1.02] transition-transform duration-500"
-              />
-
-            </div>
-
-            {/* Featured Details */}
-            <div className="lg:col-span-5 p-8 sm:p-10 flex flex-col justify-between">
-              <div>
-                {/* Category Pill */}
-                <button
-                  onClick={() => onSelectCategory(featuredPost.category)}
-                  className="px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide border border-transparent bg-indigo-50 text-indigo-700 hover:scale-105 transition-all mb-4 cursor-pointer inline-block"
+      {/* 3. Featured Post Block Carousel (Only when NO filters are active and posts exist) */}
+      {!hasActiveFilters && featuredPosts.length > 0 && (
+        <section 
+          onMouseEnter={() => setIsCarouselHovered(true)}
+          onMouseLeave={() => setIsCarouselHovered(false)}
+          className="relative bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all group/carousel"
+        >
+          <AnimatePresence mode="wait">
+            {featuredPosts.map((post, index) => {
+              if (index !== carouselIndex) return null;
+              return (
+                <motion.div 
+                  key={post.slug}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                  className="grid grid-cols-1 lg:grid-cols-12"
                 >
-                  {categories.find(c => c.slug === featuredPost.category)?.name || featuredPost.category}
-                </button>
+                  {/* Featured Image */}
+                  <div 
+                    onClick={() => onPostSelect(post.slug)}
+                    className="lg:col-span-7 aspect-[16/10] lg:aspect-auto overflow-hidden bg-gray-100 cursor-pointer relative group"
+                  >
+                    <img
+                      src={post.coverImage}
+                      alt={post.title}
+                      referrerPolicy="no-referrer"
+                      className="object-cover w-full h-full transform group-hover:scale-[1.02] transition-transform duration-500"
+                    />
+                    
 
-                {/* Title */}
-                <h2 
-                  onClick={() => onPostSelect(featuredPost.slug)}
-                  className="font-display font-bold text-2xl sm:text-3xl text-brand-navy hover:text-brand-green-dark cursor-pointer transition-colors leading-tight mb-4"
-                >
-                  {featuredPost.title}
-                </h2>
 
-                {/* Excerpt */}
-                <p className="text-sm text-gray-500 leading-relaxed line-clamp-4 mb-6">
-                  {featuredPost.excerpt}
-                </p>
-              </div>
-
-              {/* Author & Footer of Featured */}
-              <div className="pt-6 border-t border-gray-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <button
-                  onClick={() => onSelectAuthor(featuredPost.author)}
-                  className="flex items-center space-x-3 text-left cursor-pointer hover:opacity-80 transition-opacity"
-                >
-                  <img
-                    src={authors.find(a => a.name === featuredPost.author)?.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop&q=80"}
-                    alt={featuredPost.author}
-                    referrerPolicy="no-referrer"
-                    className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100"
-                  />
-                  <div>
-                    <span className="block text-xs font-bold text-gray-800">{featuredPost.author}</span>
-                    <span className="block text-[10px] text-gray-400 font-medium">{featuredPost.date} · {featuredPost.readTime}</span>
+                    {/* Featured Tag Pill */}
+                    <div className="absolute top-4 left-4 bg-brand-navy text-brand-green text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-md shadow-md flex items-center space-x-1.5 z-10">
+                      <Sparkles className="w-3 h-3 text-brand-gold animate-spin" style={{ animationDuration: '3s' }} />
+                      <span>Featured Article</span>
+                    </div>
                   </div>
-                </button>
 
-                <button
-                  onClick={() => onPostSelect(featuredPost.slug)}
-                  className="flex items-center space-x-1.5 bg-brand-navy hover:bg-brand-navy-light text-white text-xs font-semibold px-4.5 py-3 rounded-xl shadow-md cursor-pointer transition-all hover:translate-x-0.5"
-                >
-                  <span>Read Article</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-brand-green" />
-                </button>
-              </div>
-            </div>
+                  {/* Featured Details */}
+                  <div className="lg:col-span-5 p-8 sm:p-10 flex flex-col justify-between relative">
+                    <div>
+                      {/* Category Pill */}
+                      <button
+                        onClick={() => onSelectCategory(post.category)}
+                        className="px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide border border-transparent bg-indigo-50 text-indigo-700 hover:scale-105 transition-all mb-4 cursor-pointer inline-block"
+                      >
+                        {categories.find(c => c.slug === post.category)?.name || post.category}
+                      </button>
 
-          </div>
+                      {/* Title */}
+                      <h2 
+                        onClick={() => onPostSelect(post.slug)}
+                        className="font-display font-bold text-2xl sm:text-3xl text-brand-navy hover:text-brand-green-dark cursor-pointer transition-colors leading-tight mb-4"
+                      >
+                        {post.title}
+                      </h2>
+
+                      {/* Excerpt */}
+                      <p className="text-sm text-gray-500 leading-relaxed line-clamp-4 mb-6">
+                        {post.excerpt}
+                      </p>
+                    </div>
+
+                    {/* Author & Footer of Featured */}
+                    <div>
+                      {/* Carousel Indicator Dots */}
+                      {featuredPosts.length > 1 && (
+                        <div className="flex space-x-1.5 mb-5">
+                          {featuredPosts.map((_, dotIdx) => (
+                            <button
+                              key={dotIdx}
+                              onClick={() => setCarouselIndex(dotIdx)}
+                              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                                dotIdx === carouselIndex 
+                                  ? 'w-6 bg-brand-green' 
+                                  : 'w-1.5 bg-gray-200 hover:bg-gray-300'
+                              }`}
+                              title={`Go to slide ${dotIdx + 1}`}
+                            />
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="pt-5 border-t border-gray-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <button
+                          onClick={() => onSelectAuthor(post.author)}
+                          className="flex items-center space-x-3 text-left cursor-pointer hover:opacity-80 transition-opacity"
+                        >
+                          <img
+                            src={authors.find(a => a.name === post.author)?.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop&q=80"}
+                            alt={post.author}
+                            referrerPolicy="no-referrer"
+                            className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100"
+                          />
+                          <div>
+                            <span className="block text-xs font-bold text-gray-800">{post.author}</span>
+                            <span className="block text-[10px] text-gray-400 font-medium">{post.date} · {post.readTime}</span>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => onPostSelect(post.slug)}
+                          className="flex items-center space-x-1.5 bg-brand-navy hover:bg-brand-navy-light text-white text-xs font-semibold px-4.5 py-3 rounded-xl shadow-md cursor-pointer transition-all hover:translate-x-0.5"
+                        >
+                          <span>Read Article</span>
+                          <ChevronRight className="w-3.5 h-3.5 text-brand-green" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </section>
       )}
 
