@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Menu, X, ArrowUpRight, PenTool, Radio } from 'lucide-react';
 import { LogoPayfrica } from './TokenLogos';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface HeaderProps {
   currentView: string;
@@ -26,8 +27,8 @@ export default function Header({ currentView, onNavigate, onOpenAdmin, isAdminMo
           
           {/* Logo Section */}
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => { onNavigate('home'); setIsMobileMenuOpen(false); }}>
-            <div className="flex items-center space-x-2 bg-brand-gold border-2 border-brand-green rounded-xl px-3.5 py-1.5 shadow-sm transition-transform hover:scale-102">
-              <LogoPayfrica className="w-6 h-6 shadow-sm rounded-full" />
+            <div className="flex items-center space-x-2 bg-brand-gold ">
+              <LogoPayfrica className="w-12 h-12 shadow-sm rounded-full" />
               <span className="font-display font-black text-lg tracking-tight text-brand-green">
                 Payfrica
               </span>
@@ -42,11 +43,18 @@ export default function Header({ currentView, onNavigate, onOpenAdmin, isAdminMo
                 <button
                   key={item.label}
                   onClick={() => onNavigate(item.view)}
-                  className={`relative py-2 text-sm transition-colors hover:text-brand-green cursor-pointer ${
-                    isActive ? 'text-brand-green font-bold border-b-2 border-brand-green' : 'text-brand-navy/80 hover:text-brand-green font-semibold'
+                  className={`relative py-6 text-sm transition-colors cursor-pointer ${
+                    isActive ? 'text-brand-green font-extrabold' : 'text-brand-navy/80 hover:text-brand-green font-semibold'
                   }`}
                 >
-                  {item.label}
+                  <span className="relative z-10">{item.label}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="headerNavIndicator"
+                      className="absolute bottom-0 left-0 right-0 h-[3px] bg-brand-green rounded-t-full"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
                 </button>
               );
             })}
@@ -101,57 +109,66 @@ export default function Header({ currentView, onNavigate, onOpenAdmin, isAdminMo
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-brand-gold-light border-t border-brand-gold-dark/10 py-4 px-4 space-y-3 shadow-inner">
-          <div className="space-y-1">
-            {navItems.map((item) => {
-              const isActive = (item.view === 'home' && (currentView === 'home' || currentView.startsWith('post_') || currentView.startsWith('category_'))) || currentView === item.view;
-              return (
-                <button
-                  key={item.label}
-                  onClick={() => {
-                    onNavigate(item.view);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className={`block w-full text-left px-4 py-2.5 rounded-xl text-base font-medium transition-colors ${
-                    isActive ? 'bg-brand-green text-white font-bold' : 'text-brand-navy/80 hover:bg-brand-gold/20 hover:text-brand-navy'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
-          </div>
-          
-          <div className="pt-4 border-t border-brand-gold-dark/10 flex flex-col space-y-2">
-            <button
-              onClick={() => {
-                onOpenAdmin();
-                setIsMobileMenuOpen(false);
-              }}
-              className={`flex items-center justify-center space-x-2 w-full py-3 px-4 rounded-xl text-sm font-semibold border ${
-                isAdminMode 
-                  ? 'bg-brand-navy text-white border-brand-navy' 
-                  : 'bg-white text-brand-navy border-brand-navy/10'
-              }`}
-            >
-              <PenTool className="w-4 h-4" />
-              <span>{isAdminMode ? 'Exit Creator Studio' : 'Open Creator Studio'}</span>
-            </button>
+      {/* Mobile Menu with Premium Slide/Fade Animation */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            key="mobile-menu"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="md:hidden bg-brand-gold-light border-t border-brand-gold-dark/10 py-4 px-4 space-y-3 shadow-inner overflow-hidden"
+          >
+            <div className="space-y-1">
+              {navItems.map((item) => {
+                const isActive = (item.view === 'home' && (currentView === 'home' || currentView.startsWith('post_') || currentView.startsWith('category_'))) || currentView === item.view;
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => {
+                      onNavigate(item.view);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2.5 rounded-xl text-base font-medium transition-colors ${
+                      isActive ? 'bg-brand-green text-white font-bold' : 'text-brand-navy/80 hover:bg-brand-gold/20 hover:text-brand-navy'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
             
-            <a
-              href="https://bridge.payfrica.xyz"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-center space-x-1.5 w-full bg-brand-green hover:bg-brand-green-dark text-white font-semibold text-sm py-3 px-4 rounded-xl shadow-md"
-            >
-              <span>Open Dapp</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </a>
-          </div>
-        </div>
-      )}
+            <div className="pt-4 border-t border-brand-gold-dark/10 flex flex-col space-y-2">
+              <button
+                onClick={() => {
+                  onOpenAdmin();
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`flex items-center justify-center space-x-2 w-full py-3 px-4 rounded-xl text-sm font-semibold border ${
+                  isAdminMode 
+                    ? 'bg-brand-navy text-white border-brand-navy' 
+                    : 'bg-white text-brand-navy border-brand-navy/10'
+                }`}
+              >
+                <PenTool className="w-4 h-4" />
+                <span>{isAdminMode ? 'Exit Creator Studio' : 'Open Creator Studio'}</span>
+              </button>
+              
+              <a
+                href="https://bridge.payfrica.xyz"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center space-x-1.5 w-full bg-brand-green hover:bg-brand-green-dark text-white font-semibold text-sm py-3 px-4 rounded-xl shadow-md"
+              >
+                <span>Open Dapp</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

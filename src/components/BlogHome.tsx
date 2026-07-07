@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Post, Category } from '../types';
 import { categories, authors } from '../data';
 import PostCard from './PostCard';
+import { motion, AnimatePresence } from 'motion/react';
 import { Search, Flame, Tag, Mail, CheckCircle2, User, HelpCircle, ChevronRight, X, Sparkles } from 'lucide-react';
 import { LogoSquareBlue, LogoNaira, LogoPayfrica, LogoSui, LogoUSDC, LogoUSDY, LogoAvalanche } from './TokenLogos';
 
@@ -15,6 +16,27 @@ interface BlogHomeProps {
   selectedTag: string | null;
   onSelectTag: (tag: string | null) => void;
 }
+
+const heroContainerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const heroItemVariants = {
+  hidden: { opacity: 0, y: 15 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 15 } }
+};
+
+const avatarVariants = {
+  hidden: { opacity: 0, scale: 0.9, rotate: -3 },
+  show: { opacity: 1, scale: 1, rotate: 0, transition: { type: 'spring', stiffness: 90, damping: 14 } }
+};
 
 export default function BlogHome({
   posts,
@@ -146,21 +168,26 @@ export default function BlogHome({
         <div className="absolute bottom-0 left-0 w-full h-1.5 bg-gradient-to-r from-brand-gold via-brand-green to-brand-gold"></div>
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-gold-light rounded-full blur-3xl -z-10 pointer-events-none opacity-40"></div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative">
           
-          <div className="lg:col-span-7 space-y-6">
+          <motion.div 
+            variants={heroContainerVariants}
+            initial="hidden"
+            animate="show"
+            className="lg:col-span-7 space-y-6 relative z-10 bg-transparent"
+          >
             
-            <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-none text-brand-green">
+            <motion.h1 variants={heroItemVariants} className="font-display font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-none text-brand-green">
               Swap Assets to<br />
               Cash in <span className="text-brand-gold-dark font-bold">Seconds.</span>
-            </h1>
+            </motion.h1>
             
-            <p className="text-sm sm:text-base md:text-lg text-gray-500 max-w-xl leading-relaxed">
+            <motion.p variants={heroItemVariants} className="text-sm sm:text-base md:text-lg text-gray-500 max-w-xl leading-relaxed">
               Making digital assets simple, safe, and usable for Africans. Trade, pay, and save with ease. Stay ahead with smart stablecoin insights, weekly market analysis, and product updates.
-            </p>
+            </motion.p>
 
             {/* Large Hero Search Bar */}
-            <div className="pt-2 max-w-xl">
+            <motion.div variants={heroItemVariants} className="pt-2 max-w-xl">
               <div className="relative flex items-center bg-white text-gray-900 rounded-2xl border border-gray-200 shadow-md overflow-hidden group focus-within:ring-2 focus-within:ring-brand-green focus-within:border-brand-green transition-all">
                 <div className="pl-4 text-gray-400">
                   <Search className="w-5 h-5 group-focus-within:text-brand-green transition-colors" />
@@ -187,11 +214,16 @@ export default function BlogHome({
                 <button onClick={() => setSearchQuery('api')} className="bg-brand-gold-light border border-brand-gold-dark/15 px-2.5 py-1 rounded-md text-brand-navy-light hover:bg-brand-gold/20 hover:text-brand-green transition-all cursor-pointer">api</button>
                 <button onClick={() => setSearchQuery('latency')} className="bg-brand-gold-light border border-brand-gold-dark/15 px-2.5 py-1 rounded-md text-brand-navy-light hover:bg-brand-gold/20 hover:text-brand-green transition-all cursor-pointer">latency</button>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Column: Smiling African Professional with Floating Assets */}
-          <div className="lg:col-span-5 flex justify-center py-6">
+          <motion.div 
+            variants={avatarVariants}
+            initial="hidden"
+            animate="show"
+            className="lg:col-span-5 flex items-center justify-center py-6 absolute lg:relative inset-0 lg:inset-auto -z-10 lg:z-0 opacity-20 sm:opacity-25 lg:opacity-100 pointer-events-none lg:pointer-events-auto select-none overflow-visible"
+          >
             <div className="relative w-64 h-64 sm:w-76 sm:h-76 md:w-80 md:h-80 mx-auto bg-brand-gold-light/20 rounded-full flex items-center justify-center p-3 sm:p-4">
               
               {/* Outer orbit lines */}
@@ -227,24 +259,6 @@ export default function BlogHome({
                 <LogoSui className="w-full h-full" />
               </div>
 
-              {/* 3. Payfrica - Bottom Left (approx. 8 o'clock) */}
-              <div 
-                className="absolute top-[55%] -left-6 w-14 h-14 sm:w-16 sm:h-16 drop-shadow-xl animate-bounce" 
-                style={{ animationDuration: '3.8s', animationDelay: '0.4s' }}
-                title="Payfrica"
-              >
-                <LogoPayfrica className="w-full h-full" />
-              </div>
-
-              {/* 4. USDY - Bottom Left-Center (approx. 7 o'clock) */}
-              <div 
-                className="absolute -bottom-6 left-[20%] w-14 h-14 sm:w-16 sm:h-16 drop-shadow-xl animate-bounce" 
-                style={{ animationDuration: '4.2s', animationDelay: '0.3s' }}
-                title="Ondo USDY"
-              >
-                <LogoUSDY className="w-full h-full" />
-              </div>
-
               {/* 5. Blue Square (Celo/cUSD) - Bottom Right-Center (approx. 5 o'clock) */}
               <div 
                 className="absolute -bottom-4 right-[15%] w-14 h-14 sm:w-16 sm:h-16 drop-shadow-xl animate-bounce" 
@@ -262,17 +276,8 @@ export default function BlogHome({
               >
                 <LogoUSDC className="w-full h-full" />
               </div>
-
-              {/* 7. Avalanche (AVAX) - Top Right (approx. 1 o'clock) */}
-              <div 
-                className="absolute top-2 right-4 w-14 h-14 sm:w-16 sm:h-16 drop-shadow-xl animate-bounce" 
-                style={{ animationDuration: '3.4s', animationDelay: '0.6s' }}
-                title="Avalanche (AVAX)"
-              >
-                <LogoAvalanche className="w-full h-full" />
-              </div>
             </div>
-          </div>
+          </motion.div>
           
         </div>
       </section>
@@ -404,25 +409,39 @@ export default function BlogHome({
         <div className="flex items-center space-x-8 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
           <button
             onClick={() => onSelectCategory(null)}
-            className={`pb-3 text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer border-b-2 -mb-[2px] ${
+            className={`pb-3 text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer relative -mb-[2px] ${
               selectedCategory === null
-                ? 'text-brand-green border-brand-green'
-                : 'text-gray-400 border-transparent hover:text-brand-navy'
+                ? 'text-brand-green font-extrabold'
+                : 'text-gray-400 hover:text-brand-navy'
             }`}
           >
-            All Articles
+            <span>All Articles</span>
+            {selectedCategory === null && (
+              <motion.div
+                layoutId="activeCategoryUnderline"
+                className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-brand-green rounded-full"
+                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+              />
+            )}
           </button>
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => onSelectCategory(cat.slug)}
-              className={`pb-3 text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer border-b-2 -mb-[2px] ${
+              className={`pb-3 text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer relative -mb-[2px] ${
                 selectedCategory === cat.slug
-                  ? 'text-brand-green border-brand-green'
-                  : 'text-gray-400 border-transparent hover:text-brand-navy'
+                  ? 'text-brand-green font-extrabold'
+                  : 'text-gray-400 hover:text-brand-navy'
               }`}
             >
-              {cat.name}
+              <span>{cat.name}</span>
+              {selectedCategory === cat.slug && (
+                <motion.div
+                  layoutId="activeCategoryUnderline"
+                  className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-brand-green rounded-full"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
           ))}
         </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Post, Category } from '../types';
 import { authors, categories } from '../data';
 import { Eye, ThumbsUp, Calendar, Clock } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface PostCardProps {
   key?: any;
@@ -22,9 +23,14 @@ export default function PostCard({ post, onClick, onCategoryClick, onAuthorClick
   };
 
   return (
-    <article 
+    <motion.article 
       onClick={onClick}
-      className="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-brand-green/10 transition-all duration-300 flex flex-col overflow-hidden cursor-pointer h-full"
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      whileHover={{ y: -6, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05)" }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+      className="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:border-brand-green/10 flex flex-col overflow-hidden cursor-pointer h-full"
     >
       {/* 16:9 Image container */}
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-50">
@@ -102,6 +108,6 @@ export default function PostCard({ post, onClick, onCategoryClick, onAuthorClick
           </div>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, FormEvent } from 'react';
 import { Post, Category, Author } from '../types';
 import { categories, authors } from '../data';
+import { motion } from 'motion/react';
 import { 
   BarChart3, Plus, Search, Eye, ThumbsUp, Calendar, 
   Trash2, Edit, CheckSquare, Square, Save, 
@@ -527,39 +528,60 @@ export default function AdminPanel({ posts, onSavePost, onDeletePost, onClose }:
         <div className="space-y-6">
           
           {/* Tab selector */}
-          <div className="flex border-b border-gray-100">
+          <div className="flex border-b border-gray-100 relative">
             <button
               onClick={() => setActiveTab('posts')}
-              className={`pb-3 text-sm font-semibold border-b-2 px-4 cursor-pointer transition-all ${
-                activeTab === 'posts' ? 'border-brand-green text-brand-navy' : 'border-transparent text-gray-400 hover:text-gray-600'
+              className={`pb-3 text-sm font-semibold relative px-4 cursor-pointer transition-all ${
+                activeTab === 'posts' ? 'text-brand-navy' : 'text-gray-400 hover:text-gray-600'
               }`}
             >
-              <span className="flex items-center space-x-2">
+              <span className="flex items-center space-x-2 relative z-10">
                 <FileText className="w-4 h-4" />
                 <span>Articles ({posts.length})</span>
               </span>
+              {activeTab === 'posts' && (
+                <motion.div
+                  layoutId="activeAdminTabUnderline"
+                  className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-brand-green rounded-full"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
             <button
               onClick={() => setActiveTab('analytics')}
-              className={`pb-3 text-sm font-semibold border-b-2 px-4 cursor-pointer transition-all ${
-                activeTab === 'analytics' ? 'border-brand-green text-brand-navy' : 'border-transparent text-gray-400 hover:text-gray-600'
+              className={`pb-3 text-sm font-semibold relative px-4 cursor-pointer transition-all ${
+                activeTab === 'analytics' ? 'text-brand-navy' : 'text-gray-400 hover:text-gray-600'
               }`}
             >
-              <span className="flex items-center space-x-2">
+              <span className="flex items-center space-x-2 relative z-10">
                 <BarChart3 className="w-4 h-4" />
                 <span>Analytics Engine</span>
               </span>
+              {activeTab === 'analytics' && (
+                <motion.div
+                  layoutId="activeAdminTabUnderline"
+                  className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-brand-green rounded-full"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
             <button
               onClick={() => setActiveTab('subscribers')}
-              className={`pb-3 text-sm font-semibold border-b-2 px-4 cursor-pointer transition-all ${
-                activeTab === 'subscribers' ? 'border-brand-green text-brand-navy' : 'border-transparent text-gray-400 hover:text-gray-600'
+              className={`pb-3 text-sm font-semibold relative px-4 cursor-pointer transition-all ${
+                activeTab === 'subscribers' ? 'text-brand-navy' : 'text-gray-400 hover:text-gray-600'
               }`}
             >
-              <span className="flex items-center space-x-2">
+              <span className="flex items-center space-x-2 relative z-10">
                 <Mail className="w-4 h-4" />
                 <span>Newsletter Subs ({subscribers.length})</span>
               </span>
+              {activeTab === 'subscribers' && (
+                <motion.div
+                  layoutId="activeAdminTabUnderline"
+                  className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-brand-green rounded-full"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
           </div>
 
